@@ -7,16 +7,73 @@
 
 var Validator = (function(Validator){
 
+	var validateInput = function(item){
+		console.log('item', item.valid);
+
+		switch(item.type){
+            case "text":
+            	//
+        		break;
+        	case "email":
+            	//
+        		break;
+        }//switch
+
+        switch(item.name){
+            case "postcode":
+            	//
+        		break;
+        }//switch
+          
+        return item;
+    }//validateForm
+
+	var validateForm = function(items){
+		var inputs = arguments;
+            // no arguments supplied to validate so return true
+            if (items.length < 1) return true;
+
+            for (var i = items.length - 1; i >= 0; i--) {
+            	items[i] = validateInput(items[i]);
+            };
+            
+            console.log(items);
+            return items;
+    }//validateForm
+
 	Validator.start = function(formId, elementsToValidate){
-			
+			var that = this;
+			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
             var items = [];
+
             // Get element nodes to be validated and store in items
         	for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-        		items.push(document.getElementsByName(elementsToValidate[i]));
+        		var el = document.getElementsByName(elementsToValidate[i]);
+        		// check if multiple items with the same name
+        		if (el.constructor === Array){
+        			for (var x = el.length - 1; x >= 0; x--) {
+        				var item = {
+		        			el: el[x],
+		        			valid: false
+		        		}
+		        		items.push(item);
+        			}
+        		}
+
+        		var item = {
+        			el: document.getElementsByName(elementsToValidate[i]),
+		        	valid: false
+        		}
+
+        		items.push(item);
         	};
+
+        	formEl.addEventListener("submit", validateForm(items));
             
-            var form = {};
+            var form = {
+            	validateForm: validateForm
+            };
 
             Object.defineProperties(form, {
             	items : {
