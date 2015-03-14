@@ -7,37 +7,68 @@
 
 var Validator = (function(Validator){
 
-	var validateInput = function(item){
-		console.log('item', item.valid);
+    Validator.validateEmail = function(emailAddress){
+        var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
+         return pattern.test(emailAddress);
+    }
 
-		switch(item.type){
-            case "text":
-            	//
-        		break;
-        	case "email":
-            	//
-        		break;
+    Validator.isEmpty = function(element){
+        var value = element[0].value;
+        if (typeof value == 'undefined' || value == "") return true;
+
+        return false;
+    }
+
+	Validator.validateInput = function(item){
+		console.log('item', item.el);
+
+        var element = item.el[0];
+
+        // Before checking specific cases check its not empty
+        if(this.isEmpty(item.el)){
+            item.setInvalid();
+            return item;
+        }
+        else{
+            item.setValid();
+        }
+
+		switch(element.type){
+           
         }//switch
 
-        switch(item.name){
+        switch(element.name){
             case "postcode":
             	//
         		break;
+            case "email":
+                console.log(element)
+                if(!this.validateEmail(element.value)){
+                    item.setInvalid();
+                }
+                else{
+                    item.setValid();
+                }
+                break;
         }//switch
           
         return item;
     }//validateForm
 
-	var validateForm = function(items){
+	Validator.validateForm = function(items){
 		var inputs = arguments;
             // no arguments supplied to validate so return true
             if (items.length < 1) return true;
 
             for (var i = items.length - 1; i >= 0; i--) {
-            	items[i] = validateInput(items[i]);
+                var input = this.validateInput(items[i]);
+                console.log(input.valid);
+                // Not a valid input
+            	if(!input.valid){
+                    return false;
+                }
             };
             
-            console.log(items);
             return items;
     }//validateForm
 
@@ -55,7 +86,14 @@ var Validator = (function(Validator){
         			for (var x = el.length - 1; x >= 0; x--) {
         				var item = {
 		        			el: el[x],
-		        			valid: false
+		        			valid: false,
+                            setInvalid: function(){
+                                this.valid = false;
+                                console.log("set this element false", this.el[0]);
+                            },
+                            setValid: function(){
+                                this.valid = true;
+                            }
 		        		}
 		        		items.push(item);
         			}
@@ -63,16 +101,28 @@ var Validator = (function(Validator){
 
         		var item = {
         			el: document.getElementsByName(elementsToValidate[i]),
-		        	valid: false
+		        	valid: false,
+                    setInvalid: function(){
+                        this.valid = false;
+                        console.log("set this element false", this.el[0]);
+                    },
+                    setValid: function(){
+                        this.valid = true;
+                    }
         		}
 
         		items.push(item);
         	};
 
-        	formEl.addEventListener("submit", validateForm(items));
+        	formEl.addEventListener("submit", function(e){
+                e.preventDefault();
+                if (that.validateForm(items)){
+                    console.log(e);
+                }
+            });
             
             var form = {
-            	validateForm: validateForm
+
             };
 
             Object.defineProperties(form, {

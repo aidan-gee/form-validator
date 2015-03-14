@@ -1,6 +1,6 @@
 {
   "name": "form-validator",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "A javascript module for validating html forms on submit.",
   "main": "index.html",
   "scripts": {
