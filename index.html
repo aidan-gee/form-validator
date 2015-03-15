@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<title>Title of the document</title>
+	<title>Form Validation Demo</title>
+	<link rel="stylesheet" type="text/css" href="/lib/css/normalize.css">
+	<link rel="stylesheet" type="text/css" href="/lib/css/skeleton.css">
 	<link rel="stylesheet" type="text/css" href="/form-validator/formValidator.css">
 	</head>
 
 	<body>
-		<form id="demoForm">
-			<label id="name">Name:</label>
-			<input type="text" id="name" name="name">
-			<label id="email">Email:</label>
-			<input type="email" id="email" name="email">
-			<label id="postcode">Postcode:</label>
-			<input type="text" id="postcode" name="uk-postcode">
-			<input type="submit">
+		<form id="demoForm" class="six columns">
+			<h4>Demo Form</h4>
+			<div class="row">
+   				<div class="six columns">
+					<label id="name">Name:</label>
+					<input type="text" id="name" name="name" class="u-full-width">
+				</div>
+				<div class="six columns">
+					<label id="email">Email:</label>
+					<input type="email" id="email" name="email" class="u-full-width">
+				</div>
+			</div>
+			<div class="row">
+				<div class="six columns">
+					<label id="postcode">Postcode:</label>
+					<input type="text" id="postcode" name="uk-postcode" class="u-full-width">
+				</div>
+			</div>
+			<div class="row">
+				<div class="twelve columns">
+					<input type="submit" class="u-full-width button-primary">
+				</div>
+			</div>
+			</div>
 		</form>
 	</body>
 	<script type="text/javascript" src="/form-validator/formValidator.js"></script>

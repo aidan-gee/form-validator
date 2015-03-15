@@ -38,6 +38,7 @@ var Validator = (function(Validator){
     *   Will return false if its value is empty
     */
     var isEmpty = function(element){
+        console.log(element);
         var value = element.value;
         if (typeof value == 'undefined' || value == "") return true;
 
@@ -58,6 +59,7 @@ var Validator = (function(Validator){
     *   returns the item object 
     */
 	var validateInput = function(item){
+        console.log("Item ", item)
 
         var element = item.el;
 
@@ -141,8 +143,11 @@ var Validator = (function(Validator){
 			var that = this;
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
+            console.log("form is ", formEl)
             
             var form = createForm(elementsToValidate, formEl);
+
+            console.log("created form ", form);
 
             formEl.addEventListener("submit", function(e){
                 var validatedForm = validateForm(form);
@@ -167,7 +172,7 @@ var Validator = (function(Validator){
             setInvalid : function(){
                 this.valid = false;
                 if (this.el.className.indexOf("invalid") == -1){
-                    this.el.className += 'invalid';
+                    this.el.className += ' invalid';
                 }
             },
             setValid : function(){
@@ -197,14 +202,14 @@ var Validator = (function(Validator){
     */
     var createForm = function(elementsToValidate, formElement){
         var items = [];
-
+        console.log(formElement); 
+        var inputs = formElement.getElementsByTagName('input');
         for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-            // Search through child nodes 
-            console.log(formElement);
-            for (var x = 0; x < formElement.childNodes.length; x++) {
-                if(formElement.childNodes[x].nodeName == "INPUT" && formElement.childNodes[x].name == elementsToValidate[i]){   
-                    console.log(formElement.childNodes[x]);
-                    var item = createItem(elementsToValidate[i], formElement.childNodes[x]);   
+            // get all inputs in the form
+            // loop through inputs and store the matching ones
+            for (var x = inputs.length - 1; x >= 0; x--) {
+                if (inputs[x].name == elementsToValidate[i]){
+                    var item = createItem(elementsToValidate[i], inputs[x]);   
                     items.push(item); 
                 }
             }
@@ -215,7 +220,6 @@ var Validator = (function(Validator){
             }, 
             validateInput: function(name){
                 this.items.forEach(function(item, index){
-                    console.log(item.el.name);
                     if(item.el.name == name){
                         item = validateInput(item);
                     }
