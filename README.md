@@ -1,6 +1,14 @@
 # form-validator
 A pure javascript module for validating html forms. 
 
+# Demo
+
+To quickly run the demo using gulp: 
+
+1. clone the repository
+2. use 'npm install'
+3. run 'gulp'
+
 # Methods
 
 ###Validator.start(formId, elementsToValidate, invalidCallback)
