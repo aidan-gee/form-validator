@@ -43,6 +43,15 @@ var Validator = (function(Validator){
 
         return false;
     }
+    
+    /*  Pass in a string 
+    *   Test the string again a regular expression to verify it is a-z chars
+    *   Returns true or false
+    */
+    var validateName = function(name) {
+        var pattern = new RegExp(/^[A-Za-z ]+$/);
+        return pattern.test(name);
+    },
 
     /*  Pass in an item object 
     *   Will take the items element and validate it based on the elements name / type
@@ -64,6 +73,14 @@ var Validator = (function(Validator){
         }//switch
 
         switch(element.name){
+            case "first-name":
+            case "last-name":
+            case "name":
+                 if(!validateName(element.value)){
+                    item.setInvalid();
+                }
+                else item.setValid();
+                break;
             case "uk-postcode":
             	 if(!validateUkPostcode(element.value)){
                     item.setInvalid();
