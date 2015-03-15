@@ -3,6 +3,12 @@
 * API - Validator.start((string)idOfForm, (array)nameOfElements));
 *
 *		Validator.validatePostcode(nameOfInput or string(postcode))
+*
+* Copyright 2015 by Aidan Gee
+*
+* Web: http://aidangee.co.uk
+* Email: aidangeewd@gmail.com
+*
 */
 
 var Validator = (function(Validator){
@@ -11,7 +17,7 @@ var Validator = (function(Validator){
     *   Test the string again a regular expression to verify it is in correct email fomat
     *   Returns true or false
     */
-    Validator.validateEmail = function(emailAddress){
+    var validateEmail = function(emailAddress){
         var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
          return pattern.test(emailAddress);
     }
@@ -52,8 +58,7 @@ var Validator = (function(Validator){
             	//
         		break;
             case "email":
-                console.log(element)
-                if(!this.validateEmail(element.value)){
+                if(!validateEmail(element.value)){
                     item.setInvalid();
                 }
                 else{
@@ -69,9 +74,10 @@ var Validator = (function(Validator){
     *   Will validate each item in the array 
     *   returns the item object or false if something is not valid 
     */
-	Validator.validateForm = function(form){
+	var validateForm = function(form){
 
         var items = form.items;
+        var valid = true;
         // no arguments supplied to validate so return true
         if (items.length < 1) return true;
 
@@ -80,9 +86,11 @@ var Validator = (function(Validator){
             console.log(input.valid);
             // Not a valid input
         	if(!input.valid){
-                form.valid = false;
+                valid = false
             }
         };
+
+        form.valid = valid;
         
         return form;
     }//validateForm
@@ -91,7 +99,7 @@ var Validator = (function(Validator){
     *   Validates the form on submit
     *   returns the form object
     */
-	Validator.start = function(formId, elementsToValidate){
+	Validator.start = function(formId, elementsToValidate, errorCallback){
 			var that = this;
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
@@ -99,10 +107,8 @@ var Validator = (function(Validator){
 
             for (var i = elementsToValidate.length - 1; i >= 0; i--) {
                 var el = document.getElementsByName(elementsToValidate[i]);
-
                 var item = createItem(elementsToValidate[i], el);
 
-                console.log("item after", item);
             	items.push(item);
             }
             
@@ -113,7 +119,7 @@ var Validator = (function(Validator){
             		value: items
             	},
                 valid: {
-                    value: false,
+                    value: true,
                     writable: true
                 } 
             });
@@ -122,10 +128,15 @@ var Validator = (function(Validator){
 
             formEl.addEventListener("submit", function(e){
                 e.preventDefault();
-                console.log("form", form);
-                var validatedForm = that.validateForm(form);
+               
+                var validatedForm = validateForm(form);
+                console.log('validated form', validatedForm );
                 if (validatedForm.valid){
-                    console.log(e);
+                    console.log(validatedForm );
+                }else {
+                    if (typeof(errorCallback) == "function" ){
+                        errorCallback();
+                    }
                 }
             });
 
@@ -166,26 +177,3 @@ var Validator = (function(Validator){
 	return Validator;   
 })(Validator || {})//Validator Module
 
-
-// var valid = true;
-//     var errors = [];
-//     this.isValidEmailAddress = function(emailAddress) {
-//         var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
-//         return pattern.test(emailAddress);
-//     },
-//     this.isValidPassword = function(password) {
-//         var pattern = new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+){8,20}$/);
-//         return pattern.test(password);
-//     },
-//     this.isValidName = function(name) {
-//         var pattern = new RegExp(/^[A-Za-z ]+$/);
-//         return pattern.test(name);
-//     },
-//     this.isValidUKPostcode = function(postcode) {
-//         var pattern = new RegExp(/^([a-zA-Z]){1}([0-9][0-9]|[0-9]|[a-zA-Z][0-9][a-zA-Z]|[a-zA-Z][0-9][0-9]|[a-zA-Z][0-9]){1}([ ])*([0-9][a-zA-z][a-zA-z]){1}$/);
-//         return pattern.test(postcode);
-//     },
-//     this.isEmptyOrUndefined = function(input){
-//         if (typeof input == 'undefined' || input == "") return true;
-//         return false;
-//     },
