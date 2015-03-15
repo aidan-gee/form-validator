@@ -95,6 +95,14 @@ var Validator = (function(Validator){
         return form;
     }//validateForm
 
+    Validator.validateInput = function(elementName){
+        var el = document.getElementsByName(elementName);
+        var item = createItem(elementName, el);
+        item = validateInput(item);
+
+        return item;
+    }
+
     /*  (string)Id of the form to validate and (array) of input names to validate
     *   Validates the form on submit
     *   returns the form object
@@ -151,10 +159,13 @@ var Validator = (function(Validator){
         var item = {
             setInvalid : function(){
                 this.valid = false;
-                console.log("set this element false", element);
+                if (this.el[0].className.indexOf("invalid") == -1){
+                    this.el[0].className += 'invalid';
+                }
             },
             setValid : function(){
                 this.valid = true;
+                this.el[0].className = this.el[0].className .replace("invalid", "");
             } 
         };
 
