@@ -38,12 +38,12 @@ var Validator = (function(Validator){
     *   Will return false if its value is empty
     */
     var isEmpty = function(element){
-        var value = element[0].value;
+        var value = element.value;
         if (typeof value == 'undefined' || value == "") return true;
 
         return false;
     }
-    
+
     /*  Pass in a string 
     *   Test the string again a regular expression to verify it is a-z chars
     *   Returns true or false
@@ -51,7 +51,7 @@ var Validator = (function(Validator){
     var validateName = function(name) {
         var pattern = new RegExp(/^[A-Za-z ]+$/);
         return pattern.test(name);
-    },
+    }
 
     /*  Pass in an item object 
     *   Will take the items element and validate it based on the elements name / type
@@ -59,7 +59,7 @@ var Validator = (function(Validator){
     */
 	var validateInput = function(item){
 
-        var element = item.el[0];
+        var element = item.el;
 
         // Before checking specific cases check its not empty
         if(isEmpty(item.el)){
@@ -67,10 +67,6 @@ var Validator = (function(Validator){
             return item;
         }
         else item.setValid();
-
-		switch(element.type){
-           
-        }//switch
 
         switch(element.name){
             case "first-name":
@@ -125,16 +121,16 @@ var Validator = (function(Validator){
 
     Validator.validateInput = function(elementName){
         var el = document.getElementsByName(elementName);
-        var item = createItem(elementName, el);
+        var item = createItem(elementName, el[0]);
     
         return validateInput(item);
     }
 
     Validator.validateForm = function(formId, elementsToValidate){
-        var form = createForm(elementsToValidate);        
-        var validatedForm = validateForm(form);
+        var formEl = document.getElementById(formId);
+        var form = createForm(elementsToValidate, formEl);        
 
-        return validatedForm;
+        return validateForm(form);
     }
 
     /*  (string)Id of the form to validate and (array) of input names to validate
@@ -146,7 +142,7 @@ var Validator = (function(Validator){
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
             
-            var form = createForm(elementsToValidate);
+            var form = createForm(elementsToValidate, formEl);
 
             formEl.addEventListener("submit", function(e){
                 var validatedForm = validateForm(form);
@@ -170,13 +166,13 @@ var Validator = (function(Validator){
         var item = {
             setInvalid : function(){
                 this.valid = false;
-                if (this.el[0].className.indexOf("invalid") == -1){
-                    this.el[0].className += 'invalid';
+                if (this.el.className.indexOf("invalid") == -1){
+                    this.el.className += 'invalid';
                 }
             },
             setValid : function(){
                 this.valid = true;
-                this.el[0].className = this.el[0].className .replace("invalid", "");
+                this.el.className = this.el.className .replace("invalid", "");
             } 
         };
 
@@ -199,14 +195,19 @@ var Validator = (function(Validator){
     /*  
     *   Form factory function
     */
-    var createForm = function(elementsToValidate){
+    var createForm = function(elementsToValidate, formElement){
         var items = [];
 
         for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-            var el = document.getElementsByName(elementsToValidate[i]);
-            var item = createItem(elementsToValidate[i], el);
-
-            items.push(item);
+            // Search through child nodes 
+            console.log(formElement);
+            for (var x = 0; x < formElement.childNodes.length; x++) {
+                if(formElement.childNodes[x].nodeName == "INPUT" && formElement.childNodes[x].name == elementsToValidate[i]){   
+                    console.log(formElement.childNodes[x]);
+                    var item = createItem(elementsToValidate[i], formElement.childNodes[x]);   
+                    items.push(item); 
+                }
+            }
         }
         var form = {
             validateForm: function(){
@@ -214,8 +215,8 @@ var Validator = (function(Validator){
             }, 
             validateInput: function(name){
                 this.items.forEach(function(item, index){
-                    console.log(item.el[0].name);
-                    if(item.el[0].name == name){
+                    console.log(item.el.name);
+                    if(item.el.name == name){
                         item = validateInput(item);
                     }
                 });
