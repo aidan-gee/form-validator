@@ -8,10 +8,10 @@
 	</head>
 
 	<body>
-		<form id="demoForm" class="six columns">
+		<form id="demoForm" class="five columns">
 			<h4>Demo Form</h4>
 			<p>The start method below is run on window load, this runs validateForm on submit.</p>
-			<pre>Validator.start('demoForm', ['name','email','uk-postcode','country'], </br>function(form){ //callback });
+			<pre>Validator.start('demoForm',</br> ['name','email','uk-postcode','country'], </br>function(form){ //callback });
 			</pre>
 			<div class="row">
    				<div class="six columns">
@@ -44,8 +44,11 @@
 			</div>
 			</div>
 		</form>
-		<form id="demoForm2" class="six columns">
+		<form id="demoForm2" class="five columns">
 			<h4>Demo Form 2</h4>
+			<p>The validateForm can be run manually, this runs the validation and returns a form object.</p>
+			<pre>Validator.validateForm('demoForm', </br>['name','email','uk-postcode','country']);</pre>
+			<br>
 			<div class="row">
    				<div class="six columns">
 					<label id="name">Name:</label>
