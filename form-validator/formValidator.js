@@ -3,8 +3,8 @@
 * API - Validator.start((string)idOfForm, (array)nameOfElements));
 *
 *		Validator.validateInput((string)nameOfInput);
-
-        Validator.validateForm((string)formId, (array)nameOfElements);
+*
+*       Validator.validateForm((string)formId, (array)nameOfElements);
 *
 * Copyright 2015 by Aidan Gee
 *
@@ -180,7 +180,20 @@ var Validator = (function(Validator){
 
             items.push(item);
         }
-        var form = {};
+        var form = {
+            validateForm: function(){
+                validateForm(this);
+            }, 
+            validateInput: function(name){
+                this.items.forEach(function(item, index){
+                    console.log(item.el[0].name);
+                    if(item.el[0].name == name){
+                        item = validateInput(item);
+                    }
+                });
+                //validateInput();
+            }
+        };
 
         Object.defineProperties(form, {
             items : {
