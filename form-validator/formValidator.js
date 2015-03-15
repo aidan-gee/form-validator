@@ -80,11 +80,11 @@ var Validator = (function(Validator){
             console.log(input.valid);
             // Not a valid input
         	if(!input.valid){
-                return false;
+                form.valid = false;
             }
         };
         
-        return items;
+        return form;
     }//validateForm
 
     /*  (string)Id of the form to validate and (array) of input names to validate
@@ -122,9 +122,9 @@ var Validator = (function(Validator){
 
             formEl.addEventListener("submit", function(e){
                 e.preventDefault();
-                console.log(form);
-                var form = that.validateForm(form);
-                if (form.valid){
+                console.log("form", form);
+                var validatedForm = that.validateForm(form);
+                if (validatedForm.valid){
                     console.log(e);
                 }
             });
