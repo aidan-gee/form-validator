@@ -7,6 +7,7 @@
 *       Validator.validateForm((string)formId, (array)nameOfElements);
 *
 * Copyright 2015 by Aidan Gee
+* Free to use as you like
 *
 * Web: http://aidangee.co.uk
 * Email: aidangeewd@gmail.com
@@ -16,12 +17,21 @@
 var Validator = (function(Validator){
 
     /*  Pass in a string 
-    *   Test the string again a regular expression to verify it is in correct email fomat
+    *   Test the string again a regular expression to verify it is in correct email format
     *   Returns true or false
     */
     var validateEmail = function(emailAddress){
         var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
          return pattern.test(emailAddress);
+    }
+
+    /*  Pass in a string 
+    *   Test the string again a regular expression to verify it is in correct UK postcode format
+    *   Returns true or false
+    */
+    var validateUkPostcode = function(postcode) {
+        var pattern = new RegExp(/^([a-zA-Z]){1}([0-9][0-9]|[0-9]|[a-zA-Z][0-9][a-zA-Z]|[a-zA-Z][0-9][0-9]|[a-zA-Z][0-9]){1}([ ])*([0-9][a-zA-z][a-zA-z]){1}$/);
+        return pattern.test(postcode);
     }
 
     /*  Pass in an input element object 
@@ -54,16 +64,17 @@ var Validator = (function(Validator){
         }//switch
 
         switch(element.name){
-            case "postcode":
-            	//
+            case "uk-postcode":
+            	 if(!validateUkPostcode(element.value)){
+                    item.setInvalid();
+                }
+                else item.setValid();
         		break;
             case "email":
                 if(!validateEmail(element.value)){
                     item.setInvalid();
                 }
-                else{
-                    item.setValid();
-                }
+                else item.setValid();
                 break;
         }//switch
           
@@ -127,7 +138,7 @@ var Validator = (function(Validator){
                 }else {
                     e.preventDefault();
                     if (typeof(errorCallback) == "function" ){
-                        errorCallback();
+                        errorCallback(validatedForm);
                     }
                 }
             });
@@ -160,7 +171,7 @@ var Validator = (function(Validator){
                 value: element
             },
             valid: {
-                value:false,
+                value:true,
                 writable: true
             }
         });
@@ -191,8 +202,17 @@ var Validator = (function(Validator){
                         item = validateInput(item);
                     }
                 });
-                //validateInput();
-            }
+            },
+            getInvalid: function(){
+                var errors = [];
+                for (var i = 0; i < this.items.length; i++) {
+                    // if not a valid Item 
+                    if(!this.items[i].valid){
+                        errors.push(items[i]);
+                    }
+                }
+                return errors;
+            } 
         };
 
         Object.defineProperties(form, {
