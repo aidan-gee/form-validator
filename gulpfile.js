@@ -14,7 +14,7 @@ gulp.task('html', function () {
     gulp.watch("./*.html", browser.reload);
 });
 gulp.task('js', function () {
-    gulp.watch(["**/*.js"], browser.reload);
+    gulp.watch(["**/*.js", "lib/js/*.js"], browser.reload);
 });
 gulp.task('css', function () {
     gulp.watch(["**/*.css"], browser.reload);

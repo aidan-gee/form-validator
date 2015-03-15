@@ -38,7 +38,6 @@ var Validator = (function(Validator){
     *   Will return false if its value is empty
     */
     var isEmpty = function(element){
-        console.log(element);
         var value = element.value;
         if (typeof value == 'undefined' || value == "") return true;
 
@@ -59,7 +58,6 @@ var Validator = (function(Validator){
     *   returns the item object 
     */
 	var validateInput = function(item){
-        console.log("Item ", item)
 
         var element = item.el;
 
@@ -143,11 +141,8 @@ var Validator = (function(Validator){
 			var that = this;
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
-            console.log("form is ", formEl)
             
             var form = createForm(elementsToValidate, formEl);
-
-            console.log("created form ", form);
 
             formEl.addEventListener("submit", function(e){
                 var validatedForm = validateForm(form);
@@ -202,14 +197,21 @@ var Validator = (function(Validator){
     */
     var createForm = function(elementsToValidate, formElement){
         var items = [];
-        console.log(formElement); 
         var inputs = formElement.getElementsByTagName('input');
+        var selects = formElement.getElementsByTagName('select');
         for (var i = elementsToValidate.length - 1; i >= 0; i--) {
             // get all inputs in the form
             // loop through inputs and store the matching ones
             for (var x = inputs.length - 1; x >= 0; x--) {
                 if (inputs[x].name == elementsToValidate[i]){
                     var item = createItem(elementsToValidate[i], inputs[x]);   
+                    items.push(item); 
+                }
+            }
+            // loop through selects and store the matching ones
+            for (var x = selects.length - 1; x >= 0; x--) {
+                if (selects[x].name == elementsToValidate[i]){
+                    var item = createItem(elementsToValidate[i], selects[x]);   
                     items.push(item); 
                 }
             }
