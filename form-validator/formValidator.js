@@ -2,7 +2,9 @@
 *
 * API - Validator.start((string)idOfForm, (array)nameOfElements));
 *
-*		Validator.validatePostcode(nameOfInput or string(postcode))
+*		Validator.validateInput((string)nameOfInput);
+
+        Validator.validateForm((string)formId, (array)nameOfElements);
 *
 * Copyright 2015 by Aidan Gee
 *
@@ -45,9 +47,7 @@ var Validator = (function(Validator){
             item.setInvalid();
             return item;
         }
-        else{
-            item.setValid();
-        }
+        else item.setValid();
 
 		switch(element.type){
            
@@ -78,12 +78,12 @@ var Validator = (function(Validator){
 
         var items = form.items;
         var valid = true;
+    
         // no arguments supplied to validate so return true
         if (items.length < 1) return true;
 
         for (var i = items.length - 1; i >= 0; i--) {
             var input = validateInput(items[i]);
-            console.log(input.valid);
             // Not a valid input
         	if(!input.valid){
                 valid = false
@@ -98,9 +98,15 @@ var Validator = (function(Validator){
     Validator.validateInput = function(elementName){
         var el = document.getElementsByName(elementName);
         var item = createItem(elementName, el);
-        item = validateInput(item);
+    
+        return validateInput(item);
+    }
 
-        return item;
+    Validator.validateForm = function(formId, elementsToValidate){
+        var form = createForm(elementsToValidate);        
+        var validatedForm = validateForm(form);
+
+        return validatedForm;
     }
 
     /*  (string)Id of the form to validate and (array) of input names to validate
@@ -111,37 +117,15 @@ var Validator = (function(Validator){
 			var that = this;
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
-            var items = [];
-
-            for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-                var el = document.getElementsByName(elementsToValidate[i]);
-                var item = createItem(elementsToValidate[i], el);
-
-            	items.push(item);
-            }
             
-            var form = {};
-
-            Object.defineProperties(form, {
-            	items : {
-            		value: items
-            	},
-                valid: {
-                    value: true,
-                    writable: true
-                } 
-            });
-
-            console.log(form);
+            var form = createForm(elementsToValidate);
 
             formEl.addEventListener("submit", function(e){
-                e.preventDefault();
-               
                 var validatedForm = validateForm(form);
-                console.log('validated form', validatedForm );
                 if (validatedForm.valid){
-                    console.log(validatedForm );
+                    return true;
                 }else {
+                    e.preventDefault();
                     if (typeof(errorCallback) == "function" ){
                         errorCallback();
                     }
@@ -150,7 +134,6 @@ var Validator = (function(Validator){
 
             return form;
     }//validate.start
-
 
     /*  
     *   Item factory function
@@ -183,6 +166,33 @@ var Validator = (function(Validator){
         });
 
         return item;
+    }
+
+    /*  
+    *   Form factory function
+    */
+    var createForm = function(elementsToValidate){
+        var items = [];
+
+        for (var i = elementsToValidate.length - 1; i >= 0; i--) {
+            var el = document.getElementsByName(elementsToValidate[i]);
+            var item = createItem(elementsToValidate[i], el);
+
+            items.push(item);
+        }
+        var form = {};
+
+        Object.defineProperties(form, {
+            items : {
+                value: items
+            },
+            valid: {
+                value: true,
+                writable: true
+            } 
+        });
+
+        return form;
     }
 
 	return Validator;   
