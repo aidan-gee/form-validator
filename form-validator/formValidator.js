@@ -1,31 +1,41 @@
 /*  Validator Module for html forms
 *
-* API - Validator.activate((string)idOfForm, (array)nameOfElements));
+* API - Validator.start((string)idOfForm, (array)nameOfElements));
 *
 *		Validator.validatePostcode(nameOfInput or string(postcode))
 */
 
 var Validator = (function(Validator){
 
+    /*  Pass in a string 
+    *   Test the string again a regular expression to verify it is in correct email fomat
+    *   Returns true or false
+    */
     Validator.validateEmail = function(emailAddress){
         var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i);
          return pattern.test(emailAddress);
     }
 
-    Validator.isEmpty = function(element){
+    /*  Pass in an input element object 
+    *   Will return false if its value is empty
+    */
+    var isEmpty = function(element){
         var value = element[0].value;
         if (typeof value == 'undefined' || value == "") return true;
 
         return false;
     }
 
-	Validator.validateInput = function(item){
-		console.log('item', item.el);
+    /*  Pass in an item object 
+    *   Will take the items element and validate it based on the elements name / type
+    *   returns the item object 
+    */
+	var validateInput = function(item){
 
         var element = item.el[0];
 
         // Before checking specific cases check its not empty
-        if(this.isEmpty(item.el)){
+        if(isEmpty(item.el)){
             item.setInvalid();
             return item;
         }
@@ -53,89 +63,109 @@ var Validator = (function(Validator){
         }//switch
           
         return item;
+    }//validateInput
+
+    /*  Pass in an array of item objects
+    *   Will validate each item in the array 
+    *   returns the item object or false if something is not valid 
+    */
+	Validator.validateForm = function(form){
+
+        var items = form.items;
+        // no arguments supplied to validate so return true
+        if (items.length < 1) return true;
+
+        for (var i = items.length - 1; i >= 0; i--) {
+            var input = validateInput(items[i]);
+            console.log(input.valid);
+            // Not a valid input
+        	if(!input.valid){
+                return false;
+            }
+        };
+        
+        return items;
     }//validateForm
 
-	Validator.validateForm = function(items){
-		var inputs = arguments;
-            // no arguments supplied to validate so return true
-            if (items.length < 1) return true;
-
-            for (var i = items.length - 1; i >= 0; i--) {
-                var input = this.validateInput(items[i]);
-                console.log(input.valid);
-                // Not a valid input
-            	if(!input.valid){
-                    return false;
-                }
-            };
-            
-            return items;
-    }//validateForm
-
+    /*  (string)Id of the form to validate and (array) of input names to validate
+    *   Validates the form on submit
+    *   returns the form object
+    */
 	Validator.start = function(formId, elementsToValidate){
 			var that = this;
 			//get form an attatch submit handler
             var formEl = document.getElementById(formId);
             var items = [];
 
-            // Get element nodes to be validated and store in items
-        	for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-        		var el = document.getElementsByName(elementsToValidate[i]);
-        		// check if multiple items with the same name
-        		if (el.constructor === Array){
-        			for (var x = el.length - 1; x >= 0; x--) {
-        				var item = {
-		        			el: el[x],
-		        			valid: false,
-                            setInvalid: function(){
-                                this.valid = false;
-                                console.log("set this element false", this.el[0]);
-                            },
-                            setValid: function(){
-                                this.valid = true;
-                            }
-		        		}
-		        		items.push(item);
-        			}
-        		}
+            for (var i = elementsToValidate.length - 1; i >= 0; i--) {
+                var el = document.getElementsByName(elementsToValidate[i]);
 
-        		var item = {
-        			el: document.getElementsByName(elementsToValidate[i]),
-		        	valid: false,
-                    setInvalid: function(){
-                        this.valid = false;
-                        console.log("set this element false", this.el[0]);
-                    },
-                    setValid: function(){
-                        this.valid = true;
-                    }
-        		}
+                var item = createItem(elementsToValidate[i], el);
 
-        		items.push(item);
-        	};
-
-        	formEl.addEventListener("submit", function(e){
-                e.preventDefault();
-                if (that.validateForm(items)){
-                    console.log(e);
-                }
-            });
+                console.log("item after", item);
+            	items.push(item);
+            }
             
-            var form = {
-
-            };
+            var form = {};
 
             Object.defineProperties(form, {
             	items : {
             		value: items
-            	}
-            })
+            	},
+                valid: {
+                    value: false,
+                    writable: true
+                } 
+            });
+
+            console.log(form);
+
+            formEl.addEventListener("submit", function(e){
+                e.preventDefault();
+                console.log(form);
+                var form = that.validateForm(form);
+                if (form.valid){
+                    console.log(e);
+                }
+            });
 
             return form;
-    }//validateForm
+    }//validate.start
+
+
+    /*  
+    *   Item factory function
+    */
+    var createItem = function(name, element){
+        var item = {};
+
+        Object.defineProperties(item, {
+            name: {
+                value: name
+            },
+            el: {
+                value: element
+            },
+            valid: {
+                value:false,
+                writable: true
+            }
+        });
+
+        item.setInvalid = function(){
+            this.valid = false;
+            console.log("set this element false", element);
+        }
+
+        item.setValid = function(){
+            this.valid = true;
+        }
+
+        return item;
+    }
 
 	return Validator;   
-})(Validator || {})//Validator Object
+})(Validator || {})//Validator Module
 
 
 // var valid = true;
@@ -160,134 +190,3 @@ var Validator = (function(Validator){
 //         if (typeof input == 'undefined' || input == "") return true;
 //         return false;
 //     },
-//     this.validateInput = function(input, element){
-//         // input - name of the element as an identifier for what type of validation is needed
-//         // element - jquery element
-//         if(this.isValidInput(element)){
-//             //get current value
-//             var value = element.val();
-
-//              switch(input){
-//                 case "firstName":
-//                     if(!this.isValidName(value)){
-//                        this.setInvalid(element, "First Name");
-//                     }else this.setValid(element);
-//                     break
-//                 case "lastName":
-//                     if(!this.isValidName(value)){
-//                        this.setInvalid(element, "Last Name");
-//                     }else this.setValid(element);
-//                     break
-//                 case "email":
-//                     if(!this.isValidEmailAddress(value)){
-//                          this.setInvalid(element, input);
-//                     }else this.setValid(element);
-//                     break
-//                 case "postcode":
-//                     // If Uk is selected use uk postcode validation
-//                     // else do standard empty validation
-//                     var countrySelected = $('[name="country"]');
-//                     if(countrySelected.length && countrySelected.val() == 'United Kingdom|gb'){
-//                         if(!this.isValidUKPostcode(value)){
-//                              this.setInvalid(element, input);
-//                         }else this.setValid(element);
-//                     }//countrySelectedUK
-//                     else{
-//                         if(this.isEmptyOrUndefined(value)){
-
-//                             this.setInvalid(element, input);
-//                         }else this.setValid(element);
-//                     }
-//                     break
-//                 case "password":
-//                     if(!this.isValidPassword(value)){
-//                          this.setInvalid(element, input);
-//                     }else this.setValid(element);
-//                     break
-//                 default:
-//                     //if not one of the cases above default to check it exists
-//                     if(this.isEmptyOrUndefined(value)){
-//                          this.setInvalid(element, input);
-//                     }else this.setValid(element);
-//                     break
-
-//             }//switch
-//         }//if
-//         else{
-//             console.log('invalid input type was supplied', input);
-//         }
-//     }
-//     // GENERAL METHOD FOR VALIDATING FORMS
-//     // pass in inputs by name to be validated
-//     this.validateForm = function(){
-//             var that = this;
-//             var inputs = arguments;
-//             // no arguments supplied to validate so return true
-//             if (inputs.length < 1) return true;
-//                 //loop through all args
-//                 for (var i = 0; i < inputs.length; i++) {
-//                     // Get element
-//                     var element = $('[name="'+inputs[i]+'"]');
-
-//                     if (typeof element == 'undefined' || !element.length){
-//                         // doesnt exist
-//                         console.log('Incorrect arguement supplied to validator.');
-//                         return false;
-//                     }
-
-//                     // Allow multiple inputs with the same name to be validated
-//                     // or handled so they are not validated
-//                     if(element.length > 1){
-//                         //check each element in the array
-//                         element.each(function( index ) {
-//                             //validate each input
-//                             that.validateInput(inputs[i], $(this));
-//                         });
-
-//                     }
-//                     else{
-//                        this.validateInput(inputs[i], element);
-//                     }
-
-//                 }//for arguements
-//             //if the form is not valid show a notifier message
-//             if (!valid){
-//                 var notifier = new Notifier();
-//                 notifier.showPopup("Invalid Formz", this.buildErrorMessage(), "OK");
-//             }
-//             return valid;
-//     },//validateForm
-//     this.setInvalid = function(element, name){
-//         valid = false;
-//         errors.push(name);
-//         element.addClass('invalid');
-//     },
-//     this.setValid = function(element){
-//         element.removeClass('invalid');
-//     },
-//     this.isValidInput = function(element){
-//         try {
-//             element.is("input, textarea, select")
-//         }
-//         catch(err) {
-//             if (typeof err !== 'undefined'){
-//                 console.log(element + "caused an error");
-//                 return false;
-//             }
-//         }
-//         if(element.is("input, textarea, select")){
-//             return true;
-//         }
-//         // Cannot validate
-//         console.log('Cannot validate this type of input', element);
-//         return false;
-//     },
-//     this.buildErrorMessage = function(){
-//         var message ="";
-//         for (var i = errors.length - 1; i >= 0; i--) {
-//                 message+= "Invalid field " + errors[i].capitalize() + "</br>";
-//         };
-//         //clear errors
-//         errors =[];
-//         return message;
-//     }
