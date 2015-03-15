@@ -19,6 +19,9 @@ var demoForm = Validator.start('demoForm', ['name','email'], function(){
   alert("error")
 });
 ```
+# Single methods
+If you want to handle the validation yourself you can use the single methods manually. You can use the returned objects methods to do further validation.  
+
 ###Validator.validateForm(formId, elementsToValidate)
 
 formId (string) - The ID of the form to validate on submit
