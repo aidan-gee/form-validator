@@ -137,7 +137,15 @@ var Validator = (function(Validator){
     *   Item factory function
     */
     var createItem = function(name, element){
-        var item = {};
+        var item = {
+            setInvalid : function(){
+                this.valid = false;
+                console.log("set this element false", element);
+            },
+            setValid : function(){
+                this.valid = true;
+            } 
+        };
 
         Object.defineProperties(item, {
             name: {
@@ -151,15 +159,6 @@ var Validator = (function(Validator){
                 writable: true
             }
         });
-
-        item.setInvalid = function(){
-            this.valid = false;
-            console.log("set this element false", element);
-        }
-
-        item.setValid = function(){
-            this.valid = true;
-        }
 
         return item;
     }
