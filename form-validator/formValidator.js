@@ -120,6 +120,15 @@ var validator = (function(validator){
         return form;
     }//validateForm
 
+    function walkTheDOM(node, func) {
+        func(node);
+        node = node.firstChild;
+        while (node) {
+            walkTheDOM(node, func);
+            node = node.nextSibling;
+        }
+    }
+
     /*  
     *   Item factory function
     */
@@ -158,25 +167,27 @@ var validator = (function(validator){
     */
     var createForm = function(elementsToValidate, formElement){
         var items = [];
-        var inputs = formElement.getElementsByTagName('input');
-        var selects = formElement.getElementsByTagName('select');
-        for (var i = elementsToValidate.length - 1; i >= 0; i--) {
-            // get all inputs in the form
-            // loop through inputs and store the matching ones
-            for (var x = inputs.length - 1; x >= 0; x--) {
-                if (inputs[x].name == elementsToValidate[i]){
-                    var item = createItem(elementsToValidate[i], inputs[x]);   
-                    items.push(item); 
-                }
-            }
-            // loop through selects and store the matching ones
-            for (var x = selects.length - 1; x >= 0; x--) {
-                if (selects[x].name == elementsToValidate[i]){
-                    var item = createItem(elementsToValidate[i], selects[x]);   
-                    items.push(item); 
-                }
+        if (elementsToValidate.constructor === Array && elementsToValidate.length > 0){
+            for (var i = elementsToValidate.length - 1; i >= 0; i--) {
+                // get all inputs in the form
+                // loop through inputs and store the matching ones
+                walkTheDOM(formElement,function(node){
+                    if (node.name == elementsToValidate[i] && (node.tagName == 'SELECT' || node.tagName == 'INPUT')){
+                        var item = createItem(elementsToValidate[i], node);   
+                        items.push(item); 
+                    }
+                });
             }
         }
+        else{
+            walkTheDOM(formElement,function(node){
+                if (node.tagName == 'SELECT' || node.tagName == 'INPUT'){
+                    var item = createItem(elementsToValidate[i], node);   
+                    items.push(item); 
+                }
+            });
+        }
+
         var form = {
             validateForm: function(){
                 validateForm(this);

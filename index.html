@@ -8,93 +8,95 @@
 	</head>
 
 	<body>
-		<form id="demoForm" class="five columns">
-			<h4>Demo Form</h4>
-			<p>The start method below is run on window load, this runs validateForm on submit.</p>
-			<pre>Validator.start('demoForm',</br> ['name','email','uk-postcode','country'], </br>function(form){ //callback });
-			</pre>
+		<div class="container">
 			<div class="row">
-   				<div class="six columns">
-					<label id="name">Name:</label>
-					<input type="text" id="name" name="name" class="u-full-width">
-				</div>
-				<div class="six columns">
-					<label id="email">Email:</label>
-					<input type="email" id="email" name="email" class="u-full-width">
-				</div>
+				<form id="demoForm" class="six columns">
+					<h4>Demo Form</h4>
+					<p>The start method below is run on window load, this runs validateForm on submit.</p>
+					<pre>validator.start('demoForm',</br> ['name','email','uk-postcode','country'], </br>function(form){ //callback });
+					</pre>
+					<div class="row">
+		   				<div class="six columns">
+							<label id="name">Name:</label>
+							<input type="text" id="name" name="name" class="u-full-width">
+						</div>
+						<div class="six columns">
+							<label id="email">Email:</label>
+							<input type="email" id="email" name="email" class="u-full-width">
+						</div>
+					</div>
+					<div class="row">
+						<div class="six columns">
+							<label id="postcode">Postcode:</label>
+							<input type="text" id="postcode" name="uk-postcode" class="u-full-width">
+						</div>
+						<div class="six columns">
+							<label id="country">Country:</label>
+							<select id="country" name="country" class="u-full-width">
+							<option></option>
+							<option value="united-kingdom">United Kingdom</option>
+							<option value="france">France</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="twelve columns">
+							<input type="submit" class="u-full-width button-primary">
+						</div>
+					</div>
+				</form>
+				<form id="demoForm2" class="six columns">
+					<h4>Demo Form 2</h4>
+					<p>The validateForm can be run manually, this runs the validation and returns a form object.</p>
+					<pre>validator.validateForm('demoForm', </br>['name','email','uk-postcode','country']);</pre>
+					<br>
+					<div class="row">
+		   				<div class="six columns">
+							<label id="name">Name:</label>
+							<input type="text" id="name" name="name" class="u-full-width">
+						</div>
+						<div class="six columns">
+							<label id="email">Email:</label>
+							<input type="email" id="email" name="email" class="u-full-width">
+						</div>
+					</div>
+					<div class="row">
+						<div class="six columns">
+							<label id="postcode">Postcode:</label>
+							<input type="text" id="postcode" name="uk-postcode" class="u-full-width">
+						</div>
+						<div class="six columns">
+							<label id="country">Country:</label>
+							<select id="country" name="country" class="u-full-width">
+							<option></option>
+							<option value="united-kingdom">United Kingdom</option>
+							<option value="france">France</option>
+							</select>
+						</div>
+					</div>
+					<button onclick="validator.validateForm('demoForm2', ['name','email','country','uk-postcode']); return false;">Validate form</button>
+				</form>
 			</div>
+
 			<div class="row">
-				<div class="six columns">
-					<label id="postcode">Postcode:</label>
-					<input type="text" id="postcode" name="uk-postcode" class="u-full-width">
-				</div>
-				<div class="six columns">
-					<label id="country">Country:</label>
-					<select id="country" name="country" class="u-full-width">
-					<option></option>
-					<option value="united-kingdom">United Kingdom</option>
-					<option value="france">France</option>
-					</select>
-				</div>
+				<form class="six columns">
+					<h4>Demo Input</h4>
+					<p>The <strong>validateInput</strong> method validates a single input by id. This will use the inputs name (like the above examples) 
+					to apply different validations. <strong>Note:</strong> If there is no name then just the default blank validation will run.</p>
+					<pre>validator.validateInput('demoInput');</pre>
+					<br>
+					<div class="row">
+		   				<div class="twelve columns">
+							<label id="email">Email:</label>
+							<input id="demoInput" type="text" id="email" name="email" class="u-full-width">
+						</div>
+					</div>
+					<button onclick="validator.validateInput('demoInput'); return false;">Validate input</button>
+				</form>
 			</div>
-			<div class="row">
-				<div class="twelve columns">
-					<input type="submit" class="u-full-width button-primary">
-				</div>
-			</div>
-			</div>
-		</form>
-		<form id="demoForm2" class="five columns">
-			<h4>Demo Form 2</h4>
-			<p>The validateForm can be run manually, this runs the validation and returns a form object.</p>
-			<pre>Validator.validateForm('demoForm', </br>['name','email','uk-postcode','country']);</pre>
-			<br>
-			<div class="row">
-   				<div class="six columns">
-					<label id="name">Name:</label>
-					<input type="text" id="name" name="name" class="u-full-width">
-				</div>
-				<div class="six columns">
-					<label id="email">Email:</label>
-					<input type="email" id="email" name="email" class="u-full-width">
-				</div>
-			</div>
-			<div class="row">
-				<div class="six columns">
-					<label id="postcode">Postcode:</label>
-					<input type="text" id="postcode" name="uk-postcode" class="u-full-width">
-				</div>
-				<div class="six columns">
-					<label id="country">Country:</label>
-					<select id="country" name="country" class="u-full-width">
-					<option></option>
-					<option value="united-kingdom">United Kingdom</option>
-					<option value="france">France</option>
-					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="twelve columns">
-					<input type="submit" class="u-full-width button-primary">
-				</div>
-			</div>
-			</div>
-			<button onclick="validator.validateForm('demoForm2', ['name','email','country','uk-postcode']); return false;">Validate form</button>
-		</form>
-		<form class="five columns">
-			<h4>Demo Form 2</h4>
-			<p>The validateForm can be run manually, this runs the validation and returns a form object.</p>
-			<pre>Validator.validateForm('demoForm', </br>['name','email','uk-postcode','country']);</pre>
-			<br>
-			<div class="row">
-   				<div class="twelve columns">
-					<label id="name">Name:</label>
-					<input id="demoInput" type="text" id="name" name="name" class="u-full-width">
-				</div>
-			</div>
-			<button onclick="validator.validateInput('demoInput'); return false;">Validate form</button>
-		</form>
+
+		</div><!-- container -->
 	</body>
-	<script type="text/javascript" src="/lib/js/formValidator.js"></script>
+	<script type="text/javascript" src="/form-validator/formValidator.js"></script>
 	<script type="text/javascript" src="/lib/js/main.js"></script>
 </html>
