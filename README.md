@@ -9,6 +9,20 @@ To quickly run the demo using gulp:
 2. use 'npm install'
 3. run 'gulp'
 
+# Types of validation
+
+This modules uses the inputs 'name' attribute in order to do some basic validation. ALL inputs return invalid if they are empty. 
+
+### names 
+
+*name* - must contain only a-z characters and more than 1 letter
+
+*email* - standard email validation 
+
+*uk-postcode* - postcode validation for uk addresses
+
+*uk-mobile* - uk mobile number in the form 07123456789 or +447123456789
+
 # Methods
 
 ###validator.start(formId, elementsToValidate, invalidCallback)
