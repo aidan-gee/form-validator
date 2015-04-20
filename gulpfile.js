@@ -1,5 +1,12 @@
 var gulp = require('gulp');
 var browser = require('browser-sync');
+var uglify = require('gulp-uglify');
+ 
+gulp.task('compress', function() {
+  gulp.src('form-validator/*.js')
+    .pipe(uglify())
+    .pipe(gulp.dest('lib/js'))
+});
 
 gulp.task('browsersync', ['html', 'js', 'css'], function() {
 	browser({

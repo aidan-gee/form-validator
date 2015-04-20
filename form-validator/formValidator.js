@@ -14,7 +14,7 @@
 *
 */
 
-var Validator = (function(Validator){
+var validator = (function(validator){
 
     /*  Pass in a string 
     *   Test the string again a regular expression to verify it is in correct email format
@@ -38,9 +38,10 @@ var Validator = (function(Validator){
     *   Will return false if its value is empty
     */
     var isEmpty = function(element){
-        var value = element.value;
-        if (typeof value == 'undefined' || value == "") return true;
-
+        if (element.hasOwnProperty('value')){
+            var value = element.value;
+            if (typeof value == 'undefined' || value == "") return true;
+        }
         return false;
     }
 
@@ -118,46 +119,6 @@ var Validator = (function(Validator){
         
         return form;
     }//validateForm
-
-    Validator.validateInput = function(elementName){
-        var el = document.getElementsByName(elementName);
-        var item = createItem(elementName, el[0]);
-    
-        return validateInput(item);
-    }
-
-    Validator.validateForm = function(formId, elementsToValidate){
-        var formEl = document.getElementById(formId);
-        var form = createForm(elementsToValidate, formEl);        
-
-        return validateForm(form);
-    }
-
-    /*  (string)Id of the form to validate and (array) of input names to validate
-    *   Validates the form on submit
-    *   returns the form object
-    */
-	Validator.start = function(formId, elementsToValidate, errorCallback){
-			var that = this;
-			//get form an attatch submit handler
-            var formEl = document.getElementById(formId);
-            
-            var form = createForm(elementsToValidate, formEl);
-
-            formEl.addEventListener("submit", function(e){
-                var validatedForm = validateForm(form);
-                if (validatedForm.valid){
-                    return true;
-                }else {
-                    e.preventDefault();
-                    if (typeof(errorCallback) == "function" ){
-                        errorCallback(validatedForm);
-                    }
-                }
-            });
-
-            return form;
-    }//validate.start
 
     /*  
     *   Item factory function
@@ -252,6 +213,52 @@ var Validator = (function(Validator){
         return form;
     }
 
-	return Validator;   
-})(Validator || {})//Validator Module
+    // Allows the validation of a single input by ID
+    validator.validateInput = function(elementId){
+        var el, name;
+        el = document.getElementById(elementId);
+        // if element has a name set it
+        (typeof el.name !== 'undefined') ? name = el.name : name = undefined;
+        var item = createItem(name, el);
+    
+        return validateInput(item);
+    }//validateInput
+
+    // Validate a form 
+    // pass in the id of the form and an array of names(strings) as identifiers
+    // of which elements of the form to validate
+    validator.validateForm = function(formId, elementsToValidate){
+        var formEl = document.getElementById(formId);
+        var form = createForm(elementsToValidate, formEl);        
+
+        return validateForm(form);
+    }//validateForm
+
+    //  (string)Id of the form to validate and (array) of input names to validate
+    //  Validates the form on submit
+    //  returns the form object
+    validator.start = function(formId, elementsToValidate, errorCallback){
+            var that = this;
+            //get form an attatch submit handler
+            var formEl = document.getElementById(formId);
+            
+            var form = createForm(elementsToValidate, formEl);
+
+            formEl.addEventListener("submit", function(e){
+                var validatedForm = validateForm(form);
+                if (validatedForm.valid){
+                    return true;
+                }else {
+                    e.preventDefault();
+                    if (typeof errorCallback == "function" ){
+                        errorCallback(validatedForm);
+                    }
+                }
+            });
+
+            return form;
+    }//validate.start
+
+	return validator;   
+})(validator || {})//Validator Module
 

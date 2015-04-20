@@ -79,9 +79,22 @@
 				</div>
 			</div>
 			</div>
-			<button onclick="Validator.validateForm('demoForm2', ['name','email','country','uk-postcode']); return false;">Validate form</button>
+			<button onclick="validator.validateForm('demoForm2', ['name','email','country','uk-postcode']); return false;">Validate form</button>
+		</form>
+		<form class="five columns">
+			<h4>Demo Form 2</h4>
+			<p>The validateForm can be run manually, this runs the validation and returns a form object.</p>
+			<pre>Validator.validateForm('demoForm', </br>['name','email','uk-postcode','country']);</pre>
+			<br>
+			<div class="row">
+   				<div class="twelve columns">
+					<label id="name">Name:</label>
+					<input id="demoInput" type="text" id="name" name="name" class="u-full-width">
+				</div>
+			</div>
+			<button onclick="validator.validateInput('demoInput'); return false;">Validate form</button>
 		</form>
 	</body>
-	<script type="text/javascript" src="/form-validator/formValidator.js"></script>
+	<script type="text/javascript" src="/lib/js/formValidator.js"></script>
 	<script type="text/javascript" src="/lib/js/main.js"></script>
 </html>

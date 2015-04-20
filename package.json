@@ -18,6 +18,7 @@
   "homepage": "https://github.com/aidan-gee/form-validator",
   "devDependencies": {
     "browser-sync": "^2.2.3",
-    "gulp": "^3.8.11"
+    "gulp": "^3.8.11",
+    "gulp-uglify": "^1.2.0"
   }
 }
