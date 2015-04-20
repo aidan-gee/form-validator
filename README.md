@@ -1,5 +1,5 @@
 # form-validator
-A pure javascript module for validating html forms. 
+A lightweight(<3kb minified) vanilla javascript module for validating html forms. Supports IE 8+.
 
 # Demo
 
@@ -11,46 +11,46 @@ To quickly run the demo using gulp:
 
 # Methods
 
-###Validator.start(formId, elementsToValidate, invalidCallback)
+###validator.start(formId, elementsToValidate, invalidCallback)
 
 formId (string) - The ID of the form to validate on submit
 
-elementsToValidate (array) - list of inputs by name to validate
+*optional* elementsToValidate (array) - list of inputs by name to validate
 
-invalidCallback (function) - callback function to be called when form is invalid
+*optional* invalidCallback (function) - callback function to be called when form is invalid
 
-Will attatch a submit event listener to the form with the specified ID. On submit the form will be validated and return a form object.
+This will attatch a submit event listener to the form with the specified ID. On submit the form will be validated and return a form object.
 ###Example:
 ---
 ```javascript
-var demoForm = Validator.start('demoForm', ['name','email'], function(){
+var demoForm = validator.start('demoForm', ['name','email'], function(){
   alert("error")
 });
 ```
-# Single methods
-If you want to handle the validation yourself you can use the single methods manually. You can use the returned objects methods to do further validation.  
+## Manual validation
+If you dont want the validation to happen on submit you can handle this yourself with the following methods.  
 
-###Validator.validateForm(formId, elementsToValidate)
+###validator.validateForm(formId, elementsToValidate)
 
 formId (string) - The ID of the form to validate on submit
 
-elementsToValidate (array) - list of inputs by name to validate
+*optional* elementsToValidate (array) - list of inputs by name to validate
 
 Validates the form and returns a form object. 
 ###Example:
 ---
 ```javascript
-var demoForm = Validator.validateForm('demoForm', ['name','email']);
+var demoForm = validator.validateForm('demoForm', ['name','email']);
 console.log(demoForm.valid)// true or false
 ```
-###Validator.validateInput(inputName)
+###validator.validateInput(inputName)
 
-inputName (string) - the name of the input to be validated
+inputId (string) - the id of the input to be validated
 
 Validates the input and returns an input object. 
 ###Example:
 ---
 ```javascript
-var input = Validator.validateInput('name');
+var input = validator.validateInput('id');
 console.log(input.valid)// true or false
 
